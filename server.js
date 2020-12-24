@@ -8,6 +8,10 @@ let app = express();
 
 dotenv.config();
 
+//Import routes
+const testRouter = require("./routes/test");
+const userRoute = require("./routes/userRoutes");
+
 //Connect to DB
 mongoose.connect(
   process.env.DB_CONNECT,
@@ -30,9 +34,12 @@ app.use((req, res, next) => {
   next();
 });
 
+//Route middleware
+app.use("/", testRouter);
+app.use("/api/user", userRoute);
+
 //Handlebars
 const exphbs = require("express-handlebars");
-
 app.set("views", path.join(__dirname, "views"));
 app.engine(
   "hbs",
@@ -44,7 +51,7 @@ app.engine(
 );
 app.set("view engine", "hbs");
 
-//App Listening {PORT}
+//Init App
 PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is Up and running on port ${PORT}`.yellow.bold);
